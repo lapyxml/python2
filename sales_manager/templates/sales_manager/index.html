@@ -8,7 +8,7 @@
     <h1> hello, this is main page </h1><hr>
     {{ query_set }}<br><hr>
     {% for book in query_set %}
-        <a href="{% url 'book-detail' book_id=book.id%}">{{ book.title }}</a> <br>
+        <a href="{% url 'book-detail' book_id=book.id %}">{{ book.title }}</a> <br>
         <i>{{ book.author }}<br>
         {{ book.text }}<br>
         {{ book.date_publish|date:"d-m-Y" }}<br><br>

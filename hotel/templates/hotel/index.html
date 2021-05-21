@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% for room in query_set %}
+        <a href="{% url 'room-detail' room_id=room.id %}">{{ room.title }}</a><br>
+        <i>{{ room.designer }}</i><br>
+        {{ room.profile }}<br>
+        {{ room.date_creation|date:"d-m-Y" }}<br><br>
+
+    {% endfor %}
+</body>
+
+</html>
