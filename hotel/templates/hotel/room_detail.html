@@ -9,5 +9,6 @@
         <i>{{ room.designer }}</i><br>
         {{ room.profile }}<br>
         {{ room.date_creation|date:"d-m-Y" }}<br><br>
+        <a href="{% url 'booking-room' room_id=room.id %}"><i>Забронировать {{ room.book_room.count }} </i></a><br>
 </body>
 </html>

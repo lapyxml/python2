@@ -3,15 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<div class="container">
 {{ user.username }}
 {% if user.is_authenticated %}
     <a href="{% url 'logout' %}">logout</a>
 {% else %}
     <a href="{% url 'login' %}">login</a>
 {% endif %}
-    <h1> hello, this is main page </h1><hr>
+    <h1> МАГАЗИН ПИЗДАТЫХ КНИГ </h1><hr>
     {{ query_set }}<br><hr>
     {% for book in query_set %}
         <a href="{% url 'book-detail' book_id=book.id %}">{{ book.title }}</a> <br>
@@ -19,8 +21,11 @@
         {{ book.text }}<br>
         {{ book.date_publish|date:"d-m-Y" }}<br>
     <a href="{% url 'book-like' book_id=book.id %}">
-        <i>likes {{ book.count_likes }}</i></a><br><br>
+        <i>likes {{ book.count_likes }}</i>
+    </a><br>
+    <br>
 
     {% endfor %}
+</div>
 </body>
 </html>
