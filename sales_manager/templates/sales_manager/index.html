@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-<body>
+{% extends 'sales_manager/main.html' %}
+
+{% block title %} Main {% endblock %}
+
+{% block content %}
 <div class="container">
 {{ user.username }}
 {% if user.is_authenticated %}
@@ -16,16 +13,7 @@
     <h1> МАГАЗИН ПИЗДАТЫХ КНИГ </h1><hr>
     {{ query_set }}<br><hr>
     {% for book in query_set %}
-        <a href="{% url 'book-detail' book_id=book.id %}">{{ book.title }}</a> <br>
-        <i>{{ book.author }}</i><br>
-        {{ book.text }}<br>
-        {{ book.date_publish|date:"d-m-Y" }}<br>
-    <a href="{% url 'book-like' book_id=book.id %}">
-        <i>likes {{ book.count_likes }}</i>
-    </a><br>
-    <br>
-
+        {% include "sales_manager/book_view.html" with book=book with_comment=False redirect_url='main-page'%}
     {% endfor %}
 </div>
-</body>
-</html>
+{% endblock %}

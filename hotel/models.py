@@ -21,3 +21,18 @@ class Room(models.Model):
     def __str__(self):
         return self.title
 
+
+class Booking(models.Model):
+    text = models.TextField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="booking_room"
+    )
+    date_arrive = models.DateField(blank=True)
+    date_out = models.DateField(blank=True)
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.CASCADE,
+        related_name="booking_room"
+    )

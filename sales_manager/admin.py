@@ -8,7 +8,7 @@ class CommentAdmin(admin.StackedInline):
 
 class BookInline(admin.ModelAdmin):
     inlines = (CommentAdmin, )
-    readonly_fields = ("likes", )
+    # readonly_fields = ("likes", )
     list_filter = ("date_publish", )
     # list_editable = ("title", )
     list_display = ("title", "text", )

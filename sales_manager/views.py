@@ -5,7 +5,7 @@ from django.views.decorators.http import require_http_methods
 
 from sales_manager.models import Book, Comment
 from django.views import View
-from django.db.models import Count, Prefetch
+from django.db.models import Count, Prefetch, Avg
 
 
 def main_page(request):
@@ -13,7 +13,7 @@ def main_page(request):
         annotate(count_likes=Count("like"))
     comment_prefetch = Prefetch("comments", queryset=comment_query)
     query_set = Book.objects.all().select_related("author"). \
-        prefetch_related(comment_prefetch).annotate(count_likes=Count("likes"))
+        prefetch_related(comment_prefetch).annotate(rate_avg=Avg("rated_user__rate"))
     context = {"query_set": query_set}
     return render(request, "sales_manager/index.html", context=context)
 
@@ -24,13 +24,17 @@ def book_detail(request, book_id):
     return render(request, "sales_manager/book_detail.html", context=context)
 
 @login_required()
-def book_like(request, book_id):
+def book_like(request, book_id, redirect_url):
     book = Book.objects.get(id=book_id)
     if request.user in book.likes.all():
         book.likes.remove(request.user)
     else:
         book.likes.add(request.user)
-    return redirect("main-page")
+    if redirect_url == "main-page":
+        return redirect("main-page")
+    elif redirect_url == "book-detail":
+        return redirect("book-detail", book_id=book_id)
+
 
 class LoginView(View):
     def get(self, request):
