@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
 
-from sales_manager.models import Book, Comment
+from sales_manager.models import Book, Comment, UserRateBook
 from django.views import View
 from django.db.models import Count, Prefetch, Avg
 
@@ -13,7 +13,7 @@ def main_page(request):
         annotate(count_likes=Count("like"))
     comment_prefetch = Prefetch("comments", queryset=comment_query)
     query_set = Book.objects.all().select_related("author"). \
-        prefetch_related(comment_prefetch).annotate(rate_avg=Avg("rated_user__rate"))
+        prefetch_related(comment_prefetch)
     context = {"query_set": query_set}
     return render(request, "sales_manager/index.html", context=context)
 
@@ -24,12 +24,14 @@ def book_detail(request, book_id):
     return render(request, "sales_manager/book_detail.html", context=context)
 
 @login_required()
-def book_like(request, book_id, redirect_url):
+def book_like(request, book_id, rate, redirect_url):
+    UserRateBook.objects.update_or_create(
+            user_id=request.user.id,
+            book_id=book_id,
+            defaults={"rate":rate})
     book = Book.objects.get(id=book_id)
-    if request.user in book.likes.all():
-        book.likes.remove(request.user)
-    else:
-        book.likes.add(request.user)
+    book.avg_rate = book.rated_user.aggregate(rate=Avg("rate"))['rate']
+    book.save()
     if redirect_url == "main-page":
         return redirect("main-page")
     elif redirect_url == "book-detail":
