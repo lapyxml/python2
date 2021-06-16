@@ -1,9 +1,25 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_http_methods
+from datetime import datetime
+from hotel.models import Room, RoomKind
 
-from hotel.models import Room, Booking
 
+def filter_room(request):
+    rk = RoomKind.objects.all()
+    return render(request, "hotel/filter.html", {"kinds": rk})
+
+
+def search_room(request):
+    start_date = datetime.strptime(request.GET['start_date'], "%Y-%m-%d")
+    end_date = datetime.strptime(request.GET['end_date'], "%Y-%m-%d")
+    kind = request.GET['kind']
+    rooms = Room.objects.filter(
+        kind=kind,
+
+    )
+    return render(request, "hotel/search.html", {"rooms":rooms})
 
 def hotel_page(request):
     query_set = Room.objects.all()

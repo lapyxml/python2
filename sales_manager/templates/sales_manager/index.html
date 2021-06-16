@@ -1,8 +1,9 @@
 {% extends 'sales_manager/main.html' %}
-
+{% load static %}
 {% block title %} Main {% endblock %}
-
 {% block content %}
+<img src="{% static '1-12.jpg' %}">
+
 <div class="container">
 {{ user.username }}
 {% if user.is_authenticated %}
@@ -13,6 +14,9 @@
     <h1> МАГАЗИН ПИЗДАТЫХ КНИГ </h1><hr>
     {{ query_set }}<br><hr>
     {% for book in query_set %}
+        {% if book.img %}
+            <img src="{{ book.img.url }}">
+        {% endif %}
         {% include "sales_manager/book_view.html" with book=book with_comment=False redirect_url='main-page'%}
     {% endfor %}
 </div>

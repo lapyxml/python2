@@ -1,38 +1,34 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+
+class RoomKind(models.Model):
+    name = models.CharField(
+        primary_key=True,
+        max_length=10
+    )
+
+
 class Room(models.Model):
-    title = models.CharField(
-                            max_length=50,
-                            db_index=True,
-                            verbose_name="название комнаты")
-    profile = models.TextField()
-    designer = models.ForeignKey(
+    description = models.TextField()
+    kind = models.ForeignKey(RoomKind, on_delete=models.CASCADE)
+    user = models.ManyToManyField(
         User,
-        on_delete=models.CASCADE,
-        related_name="rooms"
+        through="BookedRoom",
+        related_name="room"
     )
-    number_of_seats = models.PositiveSmallIntegerField(default=0)
-    occupation = models.BooleanField(default=False)
-    date_creation = models.DateField(auto_now_add=True, db_index=True)
-    book_room = models.ManyToManyField(User, related_name="booked_room")
 
 
-    def __str__(self):
-        return self.title
-
-
-class Booking(models.Model):
-    text = models.TextField()
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name="booking_room"
-    )
-    date_arrive = models.DateField(blank=True)
-    date_out = models.DateField(blank=True)
+class BookedRoom(models.Model):
     room = models.ForeignKey(
         Room,
         on_delete=models.CASCADE,
-        related_name="booking_room"
+        related_name="booked"
+    )
+    start_date = models.DateField()
+    end_date = models.DateField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="booked"
     )
